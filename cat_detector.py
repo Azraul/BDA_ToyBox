@@ -1,8 +1,19 @@
-import os
+import urllib
+import numpy as np
 import requests
 import json
 import cv2
 import subprocess
+
+def url_to_image(url):
+    try:
+        with urllib.request.urlopen(url) as response:
+            arr = np.asarray(bytearray(response.read()), dtype=np.uint8)
+            img = cv2.imdecode(arr, cv2.IMREAD_COLOR)  # Load it as a color image
+            return img
+    except urllib.error.URLError as e:
+        print(f"Error fetching image from URL: {e}")
+        return None
 
 def get_cat_image(api_key):
     url = "https://api.thecatapi.com/v1/images/search"
@@ -18,7 +29,8 @@ def get_cat_image(api_key):
         print(f"Here's your cat image: {cat_url}")
 
         # Load the cat image and convert it to grayscale
-        cat_image = cv2.imread(cat_url)
+        cat_image = url_to_image(cat_url)
+        print(cat_image)
         if cat_image is not None:
         # Convert the image to grayscale
             gray_image = cv2.cvtColor(cat_image, cv2.COLOR_BGR2GRAY)
