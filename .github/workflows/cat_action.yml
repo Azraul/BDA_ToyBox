@@ -24,7 +24,7 @@ jobs:
         env:
           CAT_API_KEY: ${{ secrets.cat_api_key }}
         run: |
-          python fetch_cat_image.py  # Replace with the actual name of your Python script
+          python cat_detector.py  # Replace with the actual name of your Python script
 
       - name: Detect Cat
         run: |
