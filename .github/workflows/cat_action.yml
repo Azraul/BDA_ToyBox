@@ -17,7 +17,7 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip install requests opencv-python-headless
+        run: pip install requests opencv-python-headless pillow
 
       - name: Fetch Cat Image
         env:
