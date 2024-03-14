@@ -36,7 +36,7 @@ def get_cat_image(api_key):
     except Exception as e:
         print(f"Error fetching cat image: {e}")
 
-api_key = os.getenv("cat_api_key")
+api_key = os.getenv("CAT_API_KEY")
 if api_key:
     get_cat_image(api_key)
 else:
