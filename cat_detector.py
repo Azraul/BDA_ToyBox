@@ -19,19 +19,24 @@ def get_cat_image(api_key):
 
         # Load the cat image and convert it to grayscale
         cat_image = cv2.imread(cat_url)
+        if cat_image is not None:
+        # Convert the image to grayscale
+            gray_image = cv2.cvtColor(cat_image, cv2.COLOR_BGR2GRAY)
+            print("Grayscale conversion successful!")
+            # Load the cat face Haar cascade
+            cat_face_cascade = cv2.CascadeClassifier('haarcascade_frontalcatface.xml')
 
-        # Load the cat face Haar cascade
-        cat_face_cascade = cv2.CascadeClassifier('haarcascade_frontalcatface.xml')
+            # Detect cat faces in the image
+            cat_faces = cat_face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(75, 75))
 
-        # Detect cat faces in the image
-        cat_faces = cat_face_cascade.detectMultiScale(gray_cat_image, scaleFactor=1.1, minNeighbors=5, minSize=(75, 75))
-
-        if len(cat_faces) > 0:
-            print("Cat detected in the image!")
-            # Convert the cat image to ASCII art using img2txt
-            subprocess.run(["img2txt", cat_image])
+            if len(cat_faces) > 0:
+                print("Cat detected in the image!")
+                # Convert the cat image to ASCII art using img2txt
+                subprocess.run(["img2txt", cat_image])
+            else:
+                print("No cat detected in the image.")
         else:
-            print("No cat detected in the image.")
+            print("Error loading the cat image. Check the URL or network connection.")
     except Exception as e:
         print(f"Error fetching cat image: {e}")
 
