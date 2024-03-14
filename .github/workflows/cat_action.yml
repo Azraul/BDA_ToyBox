@@ -16,9 +16,6 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install img2txt
-        run: sudo apt-get install -y img2txt
-
       - name: Install dependencies
         run: pip install requests opencv-python-headless
 
