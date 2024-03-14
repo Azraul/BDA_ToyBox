@@ -24,7 +24,3 @@ jobs:
           CAT_API_KEY: ${{ secrets.CAT_API_KEY }}
         run: |
           python cat_detector.py  # Replace with the actual name of your Python script
-
-      - name: Detect Cat
-        run: |
-          python cat_detector.py  # Replace with the actual name of your Python script
