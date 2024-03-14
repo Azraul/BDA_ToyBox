@@ -19,7 +19,6 @@ def get_cat_image(api_key):
 
         # Load the cat image and convert it to grayscale
         cat_image = cv2.imread(cat_url)
-        gray_cat_image = cv2.cvtColor(cat_image, cv2.COLOR_BGR2GRAY)
 
         # Load the cat face Haar cascade
         cat_face_cascade = cv2.CascadeClassifier('haarcascade_frontalcatface.xml')
@@ -36,7 +35,7 @@ def get_cat_image(api_key):
     except Exception as e:
         print(f"Error fetching cat image: {e}")
 
-api_key = os.getenv("CAT_API_KEY")
+api_key = "live_ZbAFQMfuCAvsmAkfyxgJarl5LFLGpAFkD7Kh8HTOtekXTxXKPGODzkHmNqwpXdu3"
 if api_key:
     get_cat_image(api_key)
 else:
