@@ -1,8 +1,7 @@
 name: Fetch Cat Image and Detect Cat
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"  # Run every 5 minutes
+  push:  # Trigger the workflow on every commit
 
 jobs:
   cat_image_job:
