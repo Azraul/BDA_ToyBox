@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import cv2
+import subprocess
 
 def get_cat_image(api_key):
     url = "https://api.thecatapi.com/v1/images/search"
@@ -28,12 +29,14 @@ def get_cat_image(api_key):
 
         if len(cat_faces) > 0:
             print("Cat detected in the image!")
+            # Convert the cat image to ASCII art using img2txt
+            subprocess.run(["img2txt", cat_url])
         else:
             print("No cat detected in the image.")
     except Exception as e:
         print(f"Error fetching cat image: {e}")
 
-api_key = os.getenv("CAT_API_KEY")
+api_key = os.getenv("cat_api_key")
 if api_key:
     get_cat_image(api_key)
 else:
