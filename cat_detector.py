@@ -1,59 +1,60 @@
-import urllib
-import numpy as np
 import requests
-import json
-import cv2
-import subprocess
+from PIL import Image
+import numpy as np
+from io import BytesIO
+import os
 
-def url_to_image(url):
-    try:
-        with urllib.request.urlopen(url) as response:
-            arr = np.asarray(bytearray(response.read()), dtype=np.uint8)
-            img = cv2.imdecode(arr, cv2.IMREAD_COLOR)  # Load it as a color image
-            return img
-    except urllib.error.URLError as e:
-        print(f"Error fetching image from URL: {e}")
+CAT_API_KEY = os.getenv("CAT_API_KEY")
+
+def get_random_kitty_image(api_key):
+    url = "https://api.thecatapi.com/v1/images/search"
+    headers = {
+        "x-api-key": api_key
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        # Extract the URL of the cat image from the response
+        image_url = data[0]["url"]
+
+        # Download the image
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+
+        # Resize the image
+        width, height = img.size
+        aspect_ratio = height / width
+        new_width = 120
+        new_height = aspect_ratio * new_width * 0.55
+        img = img.resize((new_width, int(new_height)))
+
+        # Convert the image to grayscale
+        img = img.convert('L')
+
+        pixels = np.array(img)
+
+        # Define the ASCII characters
+        ascii_chars = "@%#*+=-:. "
+
+        # Replace each pixel with an ASCII character
+        ascii_str = ''
+        for pixel_value in pixels.flatten():
+            ascii_str += ascii_chars[pixel_value // 28]
+        ascii_str_len = len(ascii_str)
+
+        # Split the ASCII string into multiple lines
+        ascii_img = "\n".join(ascii_str[i:i + new_width] for i in range(0, ascii_str_len, new_width))
+
+        # Print the ASCII image
+        print(ascii_img)
+
+        return image_url
+    else:
+        print("Failed to fetch cat image:", response.text)
         return None
 
-def get_cat_image(api_key):
-    url = "https://api.thecatapi.com/v1/images/search"
-    params = {
-        "api_key": api_key,
-        "limit": 1
-    }
-
-    try:
-        response = requests.get(url, params=params)
-        cat_data = json.loads(response.content)
-        cat_url = cat_data[0]["url"]
-        print(f"Here's your cat image: {cat_url}")
-
-        # Load the cat image and convert it to grayscale
-        cat_image = url_to_image(cat_url)
-        print(cat_image)
-        if cat_image is not None:
-        # Convert the image to grayscale
-            gray_image = cv2.cvtColor(cat_image, cv2.COLOR_BGR2GRAY)
-            print("Grayscale conversion successful!")
-            # Load the cat face Haar cascade
-            cat_face_cascade = cv2.CascadeClassifier('haarcascade_frontalcatface.xml')
-
-            # Detect cat faces in the image
-            cat_faces = cat_face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(75, 75))
-
-            if len(cat_faces) > 0:
-                print("Cat detected in the image!")
-                # Convert the cat image to ASCII art using img2txt
-                subprocess.run(["img2txt", cat_image])
-            else:
-                print("No cat detected in the image.")
-        else:
-            print("Error loading the cat image. Check the URL or network connection.")
-    except Exception as e:
-        print(f"Error fetching cat image: {e}")
-
-api_key = "live_ZbAFQMfuCAvsmAkfyxgJarl5LFLGpAFkD7Kh8HTOtekXTxXKPGODzkHmNqwpXdu3"
-if api_key:
-    get_cat_image(api_key)
+kitty_url = get_random_kitty_image(CAT_API_KEY)
+if kitty_url:
+    print("Random kitty image URL:", kitty_url)
 else:
-    print("Please set your API key as an environment variable.")
+    print("Failed to fetch a random kitty image.")
