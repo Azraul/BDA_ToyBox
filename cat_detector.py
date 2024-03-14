@@ -30,7 +30,7 @@ def get_cat_image(api_key):
         if len(cat_faces) > 0:
             print("Cat detected in the image!")
             # Convert the cat image to ASCII art using img2txt
-            subprocess.run(["img2txt", cat_url])
+            subprocess.run(["img2txt", cat_image])
         else:
             print("No cat detected in the image.")
     except Exception as e:
